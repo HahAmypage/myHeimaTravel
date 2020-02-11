@@ -97,22 +97,29 @@
                                     <div class="control-group">
                                         <label class="control-label">线路名字<span class="required">*</span></label>
                                         <div class="controls">
-                                            <input type="text" id="rname" name="rname" data-required="1" class="span6 m-wrap"/>
+
+                                            <input type="text" id="rname" name="rname" data-required="1" value="${route.rname != '' ? route.rname : ''}" class="span6 m-wrap"/>
+
                                             <span class="alert alert-error">请输入名字</span>
+
                                         </div>
                                     </div>
                                     <div class="control-group">
                                         <label class="control-label">价格<span class="required">*</span></label>
                                         <div class="controls">
-                                            <input id="price" name="price" type="text" class="span6 m-wrap"/>
+                                            <input id="price" name="price" type="text" value="${route.price != 0.0 ? route.price : ''}" class="span6 m-wrap"/>
+
                                             <span class="alert alert-error">请输入价格</span>
+
                                         </div>
                                     </div>
                                     <div class="control-group">
                                         <label class="control-label">介绍<span class="required">*</span></label>
                                         <div class="controls">
-                                            <input id="routeIntroduce" name="routeIntroduce" type="text" class="span6 m-wrap"/>
+                                            <input id="routeIntroduce" name="routeIntroduce" type="text" value="${route.routeIntroduce != '' ? route.routeIntroduce : ''}" class="span6 m-wrap"/>
+
                                             <span class="alert alert-error">请输入介绍</span>
+
                                         </div>
                                     </div>
                                     <div class="control-group">
@@ -151,8 +158,8 @@
                                         <div class="controls">
                                             <select class="span6 m-wrap" name="cid">
                                                 <option value="">请选择...</option>
-                                                <c:forEach items="${categoryList}" var="category">
-                                                    <option value="${category.cid}">${category.cname}</option>
+                                                <c:forEach items="${categoryList}"  var="category">
+                                                    <option value="${category.cid}" ${category.cid == route.cid ? 'selected':''}>${category.cname}</option>
                                                 </c:forEach>
                                             </select>
                                             <span class="alert alert-error">请选择类别</span>

@@ -7,6 +7,7 @@ import com.davina.admin.model.Route;
 import com.davina.admin.service.RouteService;
 import com.davina.admin.util.UuidUtil;
 import org.apache.commons.beanutils.BeanUtils;
+import org.springframework.jca.context.ResourceAdapterApplicationContext;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -14,8 +15,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 
 
@@ -94,7 +94,9 @@ public class RouteServlet extends BaseServlet {
 
             //获取上传文件的磁盘目录
             String path = "img/product/small2/";
-            String realPath = getServletContext().getRealPath(path);
+            String realPath1 = getServletContext().getRealPath(path);
+            String realPath = "E:\\Myprojects\\java_pro\\2020\\travel\\backstage\\src\\main\\webapp\\img\\product\\small2";
+
             File file = new File(realPath);
             if (!file.exists()){
                 //目录不存在，创建
@@ -102,6 +104,7 @@ public class RouteServlet extends BaseServlet {
             }
             //获取上传文件对象
             Part rimage = request.getPart("rimage");
+//            Part rimage2 = request.getPart("rimage");
             //判断是否允许的上传文件格式(form-data; name="rimage"; filename="goods_thumb_20167_330_195.jpeg")
             String uploadFileInfo  = rimage.getHeader("content-disposition");
             String fileExtName = uploadFileInfo.substring(uploadFileInfo.lastIndexOf("."), uploadFileInfo.length() - 1);
@@ -109,15 +112,37 @@ public class RouteServlet extends BaseServlet {
                 //判断是否允许的上传文件大小
                 if (rimage.getSize() / 1024 > 500) {
                     request.setAttribute("errorMsg", "图片大小不能超过500KB");
-                    request.getRequestDispatcher("route_add.jsp").forward(request, response);
+                    request.getRequestDispatcher("route_update.jsp").forward(request, response);
                     return;
                 }
                 //将上传文件写入磁盘
                 //使用uuid生成一个32位长度的唯一码，uuid是根据当前电脑cpu、网卡mack地址，系统时间计算出来的一个唯一值
                 String fileName = UuidUtil.getUuid() + fileExtName;
-                String filePath = realPath + "/" + fileName;
-                rimage.write(filePath);
+                String filePath = realPath +"\\"+ fileName;
+                String filePath1 = realPath1 +"\\"+ fileName;
+                rimage.write(filePath1);
                 rimage.delete();
+
+                FileInputStream fileInputStream = new FileInputStream(filePath1);
+                BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+                FileOutputStream fileOutputStream = new FileOutputStream(filePath);
+                BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+
+                try{
+                    byte[] buffer = new byte[1024];
+                    int len = 0;
+                    while ((len = bufferedInputStream.read(buffer))!= -1){
+                        bufferedOutputStream.write(buffer,0,len);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }finally {
+//                    fileInputStream.close();
+                    bufferedInputStream.close();
+//                    fileOutputStream.close();
+                    bufferedOutputStream.close();
+                }
+
 
                 route.setRimage(path + fileName);
 
@@ -129,7 +154,7 @@ public class RouteServlet extends BaseServlet {
                 response.sendRedirect("RouteServlet?action=findByPage&rname=");
             }else {
                 request.setAttribute("errorMsg","上传文件格式仅支持jpg,jpeg,png");
-                request.getRequestDispatcher("route_add.jsp").forward(request,response);
+                request.getRequestDispatcher("route_update.jsp").forward(request,response);
                 return;
             }
         }catch (Exception e){
@@ -215,7 +240,8 @@ public class RouteServlet extends BaseServlet {
 
             //获取上传文件的磁盘目录
             String path = "img/product/small2/";
-            String realPath = getServletContext().getRealPath(path);
+            String realPath1 = getServletContext().getRealPath(path);
+            String realPath = "E:\\Myprojects\\java_pro\\2020\\travel\\backstage\\src\\main\\webapp\\img\\product\\small2";
             File file = new File(realPath);
             if (!file.exists()){
                 //目录不存在，创建
@@ -230,15 +256,39 @@ public class RouteServlet extends BaseServlet {
                 //判断是否允许的上传文件大小
                 if (rimage.getSize()/1024>500){
                     request.setAttribute("errorMsg","图片大小不能超过500KB");
-                    request.getRequestDispatcher("route_add.jsp").forward(request,response);
+//                    route.setRimage("");
+                    request.setAttribute("route",route);
+                    request.getRequestDispatcher("RouteServlet?action=addRouteUI").forward(request,response);
                     return;
                 }
                 //将上传文件写入磁盘
                 //使用uuid生成一个32位长度的唯一码，uuid是根据当前电脑cpu、网卡mack地址，系统时间计算出来的一个唯一值
                 String fileName = UuidUtil.getUuid()+fileExtName;
-                String filePath = realPath+"/"+fileName;
-                rimage.write(filePath);
+                String filePath = realPath +"\\"+ fileName;
+                String filePath1 = realPath1 +"\\"+ fileName;
+                rimage.write(filePath1);
                 rimage.delete();
+
+
+                FileInputStream fileInputStream = new FileInputStream(filePath1);
+                BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+                FileOutputStream fileOutputStream = new FileOutputStream(filePath);
+                BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+
+                try{
+                    byte[] buffer = new byte[1024];
+                    int len = 0;
+                    while ((len = bufferedInputStream.read(buffer))!= -1){
+                        bufferedOutputStream.write(buffer,0,len);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }finally {
+//                    fileInputStream.close();
+                    bufferedInputStream.close();
+//                    fileOutputStream.close();
+                    bufferedOutputStream.close();
+                }
 
                 route.setRimage(path+fileName);
 
@@ -246,9 +296,12 @@ public class RouteServlet extends BaseServlet {
                 routeService.addRoute(route);
 
                 response.sendRedirect("RouteServlet?action=findByPage&rname=");
+
             }else {
+//                route.setRimage("");
+                request.setAttribute("route",route);
                 request.setAttribute("errorMsg","上传文件格式仅支持jpg,jpeg,png");
-                request.getRequestDispatcher("route_add.jsp").forward(request,response);
+                request.getRequestDispatcher("RouteServlet?action=addRouteUI").forward(request,response);
                 return;
             }
 
@@ -258,4 +311,5 @@ public class RouteServlet extends BaseServlet {
         }
 
     }
+
 }

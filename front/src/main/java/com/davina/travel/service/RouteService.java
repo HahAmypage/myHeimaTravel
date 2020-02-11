@@ -40,6 +40,12 @@ public class RouteService {
         return pageBean;
     }
 
+    /**
+     * 查询线路详情页信息
+     * @param rid
+     * @return
+     * @throws Exception
+     */
     public Route findRoute(int rid) throws Exception{
 
         Map<String, Object> routeDetails = routeDao.findByRid(rid);

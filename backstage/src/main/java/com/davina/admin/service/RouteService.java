@@ -99,8 +99,9 @@ public class RouteService {
      * @return
      */
     public boolean addRoute(Route route){
-        // 封装上架时间，是否主题旅游，收藏数量，上传图片地址，所属上架id
-        route.setRdate(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date()));
+        // 封装上架时间，是否主题旅游，收藏数量，上传图片地址，所属上架id，
+        // 注意HH是24小时制，hh是12小时制，如果用12小时制会影响列表排序
+        route.setRdate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         route.setIsThemeTour("0");
         route.setCount(0);
         route.setSid(1);

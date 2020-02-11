@@ -35,7 +35,7 @@ public class RouteDao {
     }
 
     /**
-     * 根据id查指定线路
+     * 根据id查指定线路的信息，分类信息以及商家信息
      * @param rid
      * @return
      */
